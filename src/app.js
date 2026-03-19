@@ -44,6 +44,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// ── Root Route ────────────────────────────────────────────────
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'DLS Backend API is running.',
+        documentation: '/health'
+    });
+});
+
 // ── Routes ────────────────────────────────────────────────────
 app.use('/v1', deviceRoutes);
 app.use('/v1', paymentRoutes);
