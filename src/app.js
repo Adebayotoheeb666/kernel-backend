@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const deviceRoutes = require('./routes/devices');
 const paymentRoutes = require('./routes/payments');
 const adminRoutes = require('./routes/admin');
+const webhookRoutes = require('./routes/webhooks');
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(cors({
 // ── Rate Limiting ─────────────────────────────────────────────
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,                  // max 100 requests per IP per window
+    max: 1000,                 // increased to allow frequent dashboard polling
     standardHeaders: true,
     legacyHeaders: false,
     message: { success: false, message: 'Too many requests. Please try again later.' },
@@ -57,6 +58,7 @@ app.get('/', (req, res) => {
 app.use('/v1', deviceRoutes);
 app.use('/v1', paymentRoutes);
 app.use('/v1/admin', adminRoutes);
+app.use('/webhooks', webhookRoutes);
 
 // ── Health Check ──────────────────────────────────────────────
 app.get('/health', (req, res) => {

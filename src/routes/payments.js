@@ -29,7 +29,7 @@ router.post('/payment-callback', async (req, res) => {
 
     const { device_id, amount, reference } = req.body;
 
-    if (!device_id || !amount) {
+    if (!device_id || (amount === undefined || amount === null)) {
         return res.status(400).json({ success: false, message: 'device_id and amount are required.' });
     }
 

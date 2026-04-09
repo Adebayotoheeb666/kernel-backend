@@ -17,26 +17,36 @@ function initFirebase() {
 
     let credential;
 
-    // Option A: JSON string in env var (good for serverless/containers)
     if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-        credential = admin.credential.cert(serviceAccount);
+        try {
+            const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+            credential = admin.credential.cert(serviceAccount);
+        } catch (e) {
+            console.error('[FCM] Error parsing FIREBASE_SERVICE_ACCOUNT_JSON:', e.message);
+            throw new Error('Invalid Firebase JSON credentials.');
+        }
     }
-    // Option B: Path to JSON key file
     else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
         const keyPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
         if (!fs.existsSync(keyPath)) {
-            throw new Error(`Firebase service account file not found: ${keyPath}`);
+            console.error(`[FCM] File not found: ${keyPath}`);
+            throw new Error('Firebase service account file not found.');
         }
         const serviceAccount = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
         credential = admin.credential.cert(serviceAccount);
     } else {
-        throw new Error('No Firebase credentials provided. Set FIREBASE_SERVICE_ACCOUNT_PATH or FIREBASE_SERVICE_ACCOUNT_JSON in .env');
+        console.warn('[FCM] No Firebase credentials found in environment.');
+        throw new Error('Firebase credentials not configured.');
     }
 
-    admin.initializeApp({ credential });
-    firebaseInitialized = true;
-    console.log('[FCM] Firebase Admin initialized.');
+    try {
+        admin.initializeApp({ credential });
+        firebaseInitialized = true;
+        console.log('[FCM] Firebase Admin initialized.');
+    } catch (e) {
+        console.error('[FCM] Initialization error:', e.message);
+        throw e;
+    }
 }
 
 // ── Send a Lock command ───────────────────────────────────────
@@ -87,7 +97,10 @@ const sendLock = (fcmToken, amountDue, message, paymentUrl) =>
 const sendUnlock = (fcmToken) =>
     sendPush(fcmToken, 'UNLOCK');
 
+const sendDelete = (fcmToken) =>
+    sendPush(fcmToken, 'DELETE');
+
 const sendGracePeriod = (fcmToken, message) =>
     sendPush(fcmToken, 'GRACE_PERIOD', { message });
 
-module.exports = { sendPush, sendLock, sendUnlock, sendGracePeriod };
+module.exports = { sendPush, sendLock, sendUnlock, sendDelete, sendGracePeriod };
