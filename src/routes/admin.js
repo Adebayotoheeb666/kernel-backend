@@ -146,8 +146,10 @@ router.post('/devices/:deviceId/lock', async (req, res) => {
             await sendLock(fcm_token, amount_due || 0, message || 'Manual lock applied.', paymentUrl);
         }
 
+        console.log(`[Admin] Manual lock command sent to device=${deviceId}.`);
         res.json({ success: true, message: 'Lock command sent' });
     } catch (err) {
+        console.error('[Admin Lock] Request Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
@@ -176,8 +178,10 @@ router.post('/devices/:deviceId/unlock', async (req, res) => {
             await sendUnlock(fcm_token);
         }
 
+        console.log(`[Admin] Manual unlock command sent to device=${deviceId}.`);
         res.json({ success: true, message: 'Unlock command sent' });
     } catch (err) {
+        console.error('[Admin Unlock] Request Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });

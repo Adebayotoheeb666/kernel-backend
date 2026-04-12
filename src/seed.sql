@@ -13,7 +13,8 @@ VALUES
     ('dev_tecno_001', 'Tecno Spark 10 Pro', '+2348011111111', 'sample_fcm_token_1', false, 0.00, '2026-05-01', NOW() - INTERVAL '2 hours'),
     ('dev_samsung_002', 'Samsung Galaxy A14', '+2348022222222', 'sample_fcm_token_2', true, 5000.00, '2026-03-15', NOW() - INTERVAL '1 day'),
     ('dev_infinix_003', 'Infinix Hot 30', '+2348033333333', 'sample_fcm_token_3', false, 2500.00, '2026-04-10', NOW() - INTERVAL '15 minutes'),
-    ('dev_iphone_004', 'iPhone 13 (Simulator)', '+2348044444444', NULL, false, 0.00, '2026-05-15', NOW() - INTERVAL '3 days')
+    ('dev_iphone_004', 'iPhone 13 (Simulator)', '+2348044444444', NULL, false, 0.00, '2026-05-15', NOW() - INTERVAL '3 days'),
+    ('MXT16622SUP000070', 'Sample Model', '+2348055555555', 'sample_fcm_token_5', false, 0.00, '2026-06-01', NOW() - INTERVAL '10 minutes')
 ON CONFLICT (device_id) DO NOTHING;
 
 -- ── Insert Sample Payments ─────────────────────────────────────
